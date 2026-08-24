@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020812">
+
+<title>AAMush Intelligence Mesh</title>
+
+<style>
+:root{
+--bg:#020812;
+--panel:#071522;
+--panel2:#091c2b;
+--line:#12384f;
+--cyan:#13c8ff;
+--blue:#297cff;
+--green:#16e39a;
+--yellow:#ffd24d;
+--red:#ff5274;
+--purple:#9c6cff;
+--text:#eaf8ff;
+--muted:#7892a5;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:
+radial-gradient(circle at 70% 20%,rgba(0,150,210,.09),transparent 30%),
+#020812;
+color:var(--text);
+font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,select{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+.app{
+min-height:100vh;
+display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+padding:18px 13px;
+background:linear-gradient(180deg,#061522,#020910);
+border-right:1px solid var(--line);
+z-index:50;
+}
+
+.logo{
+padding:8px 10px 20px;
+border-bottom:1px solid #0e293a;
+margin-bottom:15px;
+}
+
+.logo h1{
+font-size:22px;
+margin:0;
+}
+
+.logo p{
+font-size:8px;
+letter-spacing:3px;
+color:var(--cyan);
+margin:5px 0 0;
+}
+
+.label{
+font-size:9px;
+letter-spacing:2px;
+color:#4f7085;
+margin:18px 9px 7px;
+}
+
+.nav{
+width:100%;
+padding:11px;
+margin:2px 0;
+border:1px solid transparent;
+border-radius:8px;
+background:transparent;
+color:#8199aa;
+text-align:left;
+}
+
+.nav:hover,
+.nav.active{
+background:#0a2232;
+border-color:#164a64;
+color:#fff;
+box-shadow:inset 3px 0 var(--cyan);
+}
+
+.icon{
+display:inline-block;
+width:27px;
+color:var(--cyan);
+text-align:center;
+}
+
+.status{
+margin-top:20px;
+padding:11px;
+border-radius:9px;
+border:1px solid #14583f;
+background:#031b14;
+color:var(--green);
+font-size:9px;
+}
+
+.status small{
+display:block;
+color:#5f8c7d;
+margin-top:5px;
+}
+
+/* MAIN */
+
+.main{
+margin-left:250px;
+width:calc(100% - 250px);
+}
+
+.topbar{
+height:64px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+background:#030b13;
+border-bottom:1px solid var(--line);
+position:sticky;
+top:0;
+z-index:40;
+}
+
+.crumb{
+font-size:11px;
+color:#668296;
+}
+
+.crumb strong{
+color:white;
+}
+
+.actions{
+display:flex;
+gap:8px;
+}
+
+.btn{
+padding:9px 13px;
+border-radius:7px;
+border:1px solid #17455e;
+background:#071925;
+color:#ccefff;
+}
+
+.btn:hover{
+border-color:var(--cyan);
+}
+
+.primary{
+background:linear-gradient(135deg,#087fac,#075778);
+border-color:#13bde9;
+color:white;
+}
+
+.content{
+padding:20px;
+max-width:1600px;
+margin:auto;
+}
+
+.view{
+display:none;
+}
+
+.view.active{
+display:block;
+}
+
+/* HERO */
+
+.hero{
+display:flex;
+justify-content:space-between;
+gap:20px;
+margin-bottom:18px;
+}
+
+.eyebrow{
+font-size:9px;
+letter-spacing:2.5px;
+color:var(--cyan);
+}
+
+.hero h2{
+font-size:clamp(28px,4vw,45px);
+margin:8px 0;
+line-height:1.04;
+}
+
+.hero p{
+max-width:780px;
+color:var(--muted);
+font-size:12px;
+line-height:1.7;
+}
+
+.live{
+height:max-content;
+white-space:nowrap;
+padding:9px 13px;
+border-radius:20px;
+border:1px solid #12654d;
+background:#032219;
+color:var(--green);
+font-size:9px;
+}
+
+/* CARDS */
+
+.card{
+background:linear-gradient(145deg,#081a28,#040d16);
+border:1px solid var(--line);
+border-radius:13px;
+box-shadow:0 0 30px rgba(0,180,255,.05);
+}
+
+.panel{
+padding:16px;
+}
+
+.head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:13px;
+}
+
+.head h3{
+margin:0;
+font-size:14px;
+}
+
+.head span{
+font-size:8px;
+letter-spacing:1px;
+color:#58798c;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:11px;
+}
+
+.stat{
+padding:14px;
+}
+
+.stat label{
+font-size:8px;
+letter-spacing:1px;
+color:#638196;
+}
+
+.value{
+display:block;
+font-size:25px;
+font-weight:bold;
+margin:7px 0;
+}
+
+.good{
+color:var(--green);
+}
+
+.warn{
+color:var(--yellow);
+}
+
+.stat small{
+font-size:9px;
+color:#628397;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr);
+gap:14px;
+margin-top:14px;
+}
+
+.stack{
+display:grid;
+gap:14px;
+}
+
+/* MAP */
+
+.map{
+height:430px;
+position:relative;
+overflow:hidden;
+border-radius:10px;
+background:
+radial-gradient(circle at 50% 50%,#084357,#061e2e 30%,#03131e 65%,#020a10);
+}
+
+.map:before{
+content:"";
+position:absolute;
+inset:0;
+background:
+linear-gradient(rgba(20,130,170,.07) 1px,transparent 1px),
+linear-gradient(90deg,rgba(20,130,170,.07) 1px,transparent 1px);
+background-size:42px 42px;
+}
+
+.route{
+position:absolute;
+height:2px;
+background:repeating-linear-gradient(
+90deg,
+var(--yellow) 0 9px,
+transparent 9px 17px
+);
+opacity:.75;
+animation:route 1.6s linear infinite;
+}
+
+@keyframes route{
+to{background-position:34px 0}
+}
+
+.r1{width:170px;left:35%;top:41%;transform:rotate(-20deg)}
+.r2{width:185px;left:44%;top:30%;transform:rotate(4deg)}
+.r3{width:160px;left:64%;top:27%;transform:rotate(6deg)}
+.r4{width:180px;left:45%;top:31%;transform:rotate(47deg)}
+.r5{width:165px;left:34%;top:69%;transform:rotate(-15deg)}
+.r6{width:175px;left:34%;top:42%;transform:rotate(30deg)}
+
+.node{
+position:absolute;
+transform:translate(-50%,-50%);
+text-align:center;
+cursor:pointer;
+z-index:5;
+}
+
+.dot{
+width:17px;
+height:17px;
+margin:auto;
+border-radius:50%;
+background:var(--red);
+border:3px solid #ffdbe2;
+box-shadow:0 0 12px var(--red),0 0 30px rgba(255,82,116,.5);
+animation:pulse 1.7s infinite;
+}
+
+@keyframes pulse{
+50%{
+box-shadow:
+0 0 15px var(--red),
+0 0 45px rgba(255,82,116,.8);
+}
+}
+
+.node b{
+display:block;
+font-size:9px;
+margin-top:3px;
+text-shadow:0 2px 5px black;
+white-space:nowrap;
+}
+
+.kampala{left:34%;top:40%}
+.kigali{left:45%;top:29%}
+.nairobi{left:64%;top:26%}
+.mombasa{left:78%;top:32%}
+.dar{left:69%;top:70%}
+.bujumbura{left:32%;top:70%}
+
+/* DEVICE */
+
+.device{
+height:175px;
+display:grid;
+place-items:center;
+border:1px solid #15445d;
+border-radius:10px;
+background:radial-gradient(circle,#0a526a,#061620 65%);
+}
+
+.mesh{
+width:150px;
+height:74px;
+display:grid;
+place-items:center;
+border:2px solid var(--cyan);
+border-radius:14px;
+color:#b6f3ff;
+letter-spacing:2px;
+font-weight:bold;
+box-shadow:0 0 30px rgba(20,200,255,.4);
+animation:meshglow 2s infinite;
+}
+
+@keyframes meshglow{
+50%{box-shadow:0 0 50px rgba(20,200,255,.7)}
+}
+
+.telemetry{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:10px;
+}
+
+.telemetry div{
+padding:9px;
+border:1px solid #102e40;
+border-radius:7px;
+background:#06121c;
+}
+
+.telemetry small{
+display:block;
+font-size:8px;
+color:#5c788b;
+margin-bottom:4px;
+}
+
+/* EVENTS */
+
+.events{
+max-height:200px;
+overflow:auto;
+}
+
+.event{
+padding:8px 0;
+border-bottom:1px solid #0e2939;
+font-size:9px;
+}
+
+.time{
+color:#4f7185;
+}
+
+.type{
+color:var(--cyan);
+margin-left:6px;
+}
+
+.msg{
+color:#8ba5b5;
+margin-left:6px;
+}
+
+/* MODULES */
+
+.modules{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-top:14px;
+}
+
+.module{
+padding:15px;
+cursor:pointer;
+transition:.2s;
+}
+
+.module:hover{
+transform:translateY(-2px);
+border-color:#1b6688;
+}
+
+.module .big{
+font-size:23px;
+color:var(--cyan);
+}
+
+.module h3{
+font-size:13px;
+margin:9px 0 5px;
+}
+
+.module p{
+font-size:10px;
+color:#7892a4;
+line-height:1.5;
+}
+
+/* TABLE */
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th,
+.table td{
+padding:10px;
+border-bottom:1px solid #102c3e;
+text-align:left;
+font-size:10px;
+}
+
+.table th{
+font-size:8px;
+letter-spacing:1px;
+color:#5b798c;
+}
+
+.online{
+color:var(--green);
+}
+
+.warning{
+color:var(--yellow);
+}
+
+.danger{
+color:var(--red);
+}
+
+/* FORM */
+
+.form{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+
+.field{
+padding:10px;
+background:#06121c;
+border:1px solid var(--line);
+border-radius:7px;
+}
+
+.field label{
+display:block;
+font-size:8px;
+color:#5c7a8e;
+margin-bottom:5px;
+}
+
+.field select,
+.field input{
+width:100%;
+padding:8px;
+background:#020a11;
+color:white;
+border:1px solid #17384c;
+border-radius:5px;
+}
+
+/* PROFILE */
+
+.profile{
+display:grid;
+grid-template-columns:155px 1fr;
+gap:20px;
+}
+
+.profile img{
+width:155px;
+height:195px;
+object-fit:cover;
+border-radius:11px;
+border:1px solid #1a5069;
+}
+
+/* MANUAL */
+
+.manual{
+line-height:1.7;
+}
+
+.manual h3{
+color:var(--cyan);
+font-size:14px;
+margin-top:22px;
+}
+
+.manual p,
+.manual li{
+color:#8ca5b4;
+font-size:11px;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+
+.sidebar{
+width:70px;
+padding:12px 7px;
+}
+
+.main{
+margin-left:70px;
+width:calc(100% - 70px);
+}
+
+.logo h1{
+font-size:0;
+text-align:center;
+}
+
+.logo h1:after{
+content:"A";
+font-size:25px;
+color:var(--cyan);
+}
+
+.logo p,
+.label,
+.status,
+.nav span:not(.icon){
+display:none;
+}
+
+.nav{
+text-align:center;
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:650px){
+
+.content{
+padding:11px;
+}
+
+.hero{
+display:block;
+}
+
+.live{
+display:inline-block;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+.modules{
+grid-template-columns:1fr;
+}
+
+.form{
+grid-template-columns:1fr;
+}
+
+.profile{
+grid-template-columns:1fr;
+}
+
+.map{
+height:340px;
+}
+
+.actions .btn:first-child{
+display:none;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<div class="logo">
+<h1>AAMush</h1>
+<p>INTELLIGENCE MESH</p>
+</div>
+
+<div class="label">COMMAND</div>
+
+<button class="nav active" data-view="command">
+<span class="icon">⌘</span>
+<span>Command Centre</span>
+</button>
+
+<button class="nav" data-view="map">
+<span class="icon">◎</span>
+<span>Corridor Map</span>
+</button>
+
+<button class="nav" data-view="border">
+<span class="icon">▣</span>
+<span>Border Intelligence</span>
+</button>
+
+<button class="nav" data-view="eta">
+<span class="icon">◷</span>
+<span>ETA Engine</span>
+</button>
+
+<button class="nav" data-view="cargo">
+<span class="icon">▤</span>
+<span>Cargo Tracker</span>
+</button>
+
+<div class="label">MESH</div>
+
+<button class="nav" data-view="mesh">
+<span class="icon">⌁</span>
+<span>Mesh-01</span>
+</button>
+
+<button class="nav" data-view="feeder">
+<span class="icon">⬡</span>
+<span>AAMush-Tech Feeder</span>
+</button>
+
+<div class="label">OPERATIONS</div>
+
+<button class="nav" data-view="alerts">
+<span class="icon">!</span>
+<span>Alerts & Events</span>
+</button>
+
+<button class="nav" data-view="reports">
+<span class="icon">▥</span>
+<span>Reports</span>
+</button>
+
+<button class="nav" data-view="manual">
+<span class="icon">?</span>
+<span>Operation Manual</span>
+</button>
+
+<button class="nav" data-view="developer">
+<span class="icon">💼</span>
+<span>Developer Briefcase</span>
+</button>
+
+<div class="status">
+● SYSTEM ONLINE
+<small>DEMO TELEMETRY ACTIVE</small>
+</div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="crumb">
+AAMush /
+<strong id="title">Command Centre</strong>
+</div>
+
+<div class="actions">
+
+<button class="btn"
+onclick="diagnostics()">
+Diagnostics
+</button>
+
+<button class="btn primary"
+onclick="launchFeeder()">
+▶ Launch Feeder
+</button>
+
+</div>
+
+</header>
+
+
+<div class="content">
+
+
+<!-- COMMAND CENTRE -->
+
+<section id="command" class="view active">
+
+<div class="hero">
+
+<div>
+
+<div class="eyebrow">
+EAST AFRICA REGIONAL OPERATIONS
+</div>
+
+<h2>
+AAMush Intelligence<br>
+Command Centre
+</h2>
+
+<p>
+A unified operational interface for corridor
+visibility, logistics telemetry, cargo movement,
+ETA analysis and border intelligence.
+</p>
+
+</div>
+
+<div class="live">
+● LIVE SIMULATION
+</div>
+
+</div>
+
+
+<div class="stats">
+
+<div class="card stat">
+<label>ACTIVE VEHICLES</label>
+<span class="value" id="vehicles">247</span>
+<small class="good">▲ 4.2%</small>
+</div>
+
+<div class="card stat">
+<label>CARGO TONNAGE</label>
+<span class="value" id="tons">12,847</span>
+<small>TONS MONITORED</small>
+</div>
+
+<div class="card stat">
+<label>MESH HEALTH</label>
+<span class="value good">98.7%</span>
+<small>6 NODES ONLINE</small>
+</div>
+
+<div class="card stat">
+<label>AVG ETA</label>
+<span class="value warn">31h 42m</span>
+<small>CORRIDOR ESTIMATE</small>
+</div>
+
+<div class="card stat">
+<label>MESH-01 BATTERY</label>
+<span class="value" id="battery">87%</span>
+<small>GPS LOCKED</small>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card panel">
+
+<div class="head">
+<h3>East Africa Corridor Intelligence</h3>
+<span>6 ACTIVE NODES</span>
+</div>
+
+<div class="map">
+
+<div class="route r1"></div>
+<div class="route r2"></div>
+<div class="route r3"></div>
+<div class="route r4"></div>
+<div class="route r5"></div>
+<div class="route r6"></div>
+
+<div class="node kampala" onclick="node('Kampala','Uganda')">
+<div class="dot"></div>
+<b>KAMPALA</b>
+</div>
+
+<div class="node kigali" onclick="node('Kigali','Rwanda')">
+<div class="dot"></div>
+<b>KIGALI</b>
+</div>
+
+<div class="node nairobi" onclick="node('Nairobi','Kenya')">
+<div class="dot"></div>
+<b>NAIROBI</b>
+</div>
+
+<div class="node mombasa" onclick="node('Mombasa','Kenya')">
+<div class="dot"></div>
+<b>MOMBASA</b>
+</div>
+
+<div class="node dar" onclick="node('Dar es Salaam','Tanzania')">
+<div class="dot"></div>
+<b>DAR ES SALAAM</b>
+</div>
+
+<div class="node bujumbura" onclick="node('Bujumbura','Burundi')">
+<div class="dot"></div>
+<b>BUJUMBURA</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="stack">
+
+<div class="card panel">
+
+<div class="head">
+<h3>AAMush Mesh-01</h3>
+<span class="online">● ONLINE</span>
+</div>
+
+<div class="device">
+<div class="mesh">
+MESH-01
+</div>
+</div>
+
+<div class="telemetry">
+
+<div>
+<small>DEVICE ID</small>
+<b>AAM-4401</b>
+</div>
+
+<div>
+<small>BATTERY</small>
+<b id="battery2">87%</b>
+</div>
+
+<div>
+<small>SIGNAL</small>
+<b>−68 dBm</b>
+</div>
+
+<div>
+<small>DATA RATE</small>
+<b id="rate">2.4 Mbps</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card panel">
+
+<div class="head">
+<h3>Live Events</h3>
+<span>STREAM</span>
+</div>
+
+<div class="events" id="events"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modules">
+
+<div class="card module" onclick="show('eta')">
+<div class="big">◷</div>
+<h3>ETA Engine</h3>
+<p>
+Calculate simulated corridor arrival estimates.
+</p>
+</div>
+
+<div class="card module" onclick="show('cargo')">
+<div class="big">▤</div>
+<h3>Cargo Tracker</h3>
+<p>
+Track demonstration shipment intelligence.
+</p>
+</div>
+
+<div class="card module" onclick="show('border')">
+<div class="big">▣</div>
+<h3>Border Intelligence</h3>
+<p>
+Review simulated border conditions.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MAP -->
+
+<section id="map" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Regional Corridor Map</h3>
+<span>INTERACTIVE</span>
+</div>
+
+<div class="map" style="height:560px">
+
+<div class="route r1"></div>
+<div class="route r2"></div>
+<div class="route r3"></div>
+<div class="route r4"></div>
+<div class="route r5"></div>
+<div class="route r6"></div>
+
+<div class="node kampala" onclick="node('Kampala','Uganda')">
+<div class="dot"></div><b>KAMPALA</b>
+</div>
+
+<div class="node kigali" onclick="node('Kigali','Rwanda')">
+<div class="dot"></div><b>KIGALI</b>
+</div>
+
+<div class="node nairobi" onclick="node('Nairobi','Kenya')">
+<div class="dot"></div><b>NAIROBI</b>
+</div>
+
+<div class="node mombasa" onclick="node('Mombasa','Kenya')">
+<div class="dot"></div><b>MOMBASA</b>
+</div>
+
+<div class="node dar" onclick="node('Dar es Salaam','Tanzania')">
+<div class="dot"></div><b>DAR ES SALAAM</b>
+</div>
+
+<div class="node bujumbura" onclick="node('Bujumbura','Burundi')">
+<div class="dot"></div><b>BUJUMBURA</b>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BORDER -->
+
+<section id="border" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Border Intelligence</h3>
+<span>DEMONSTRATION DATA</span>
+</div>
+
+<table class="table">
+
+<thead>
+<tr>
+<th>NODE</th>
+<th>QUEUE</th>
+<th>CLEARANCE</th>
+<th>STATUS</th>
+<th>INTELLIGENCE</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>Dar es Salaam</td>
+<td>18 vehicles</td>
+<td>Normal</td>
+<td class="online">ONLINE</td>
+<td>Stable</td>
+</tr>
+
+<tr>
+<td>Mombasa</td>
+<td>31 vehicles</td>
+<td>Normal</td>
+<td class="online">ONLINE</td>
+<td>Stable</td>
+</tr>
+
+<tr>
+<td>Nairobi</td>
+<td>26 vehicles</td>
+<td>Moderate</td>
+<td class="online">ONLINE</td>
+<td class="warning">Queue Watch</td>
+</tr>
+
+<tr>
+<td>Kampala</td>
+<td>14 vehicles</td>
+<td>Normal</td>
+<td class="online">ONLINE</td>
+<td>Stable</td>
+</tr>
+
+<tr>
+<td>Kigali</td>
+<td>9 vehicles</td>
+<td>Fast</td>
+<td class="online">ONLINE</td>
+<td>Clear</td>
+</tr>
+
+<tr>
+<td>Bujumbura</td>
+<td>17 vehicles</td>
+<td>Moderate</td>
+<td class="online">ONLINE</td>
+<td class="warning">Review</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ETA -->
+
+<section id="eta" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>ETA Engine</h3>
+<span>PREDICTIVE SIMULATION</span>
+</div>
+
+<div class="form">
+
+<div class="field">
+<label>ORIGIN</label>
+<select id="from">
+<option>Dar es Salaam</option>
+<option>Mombasa</option>
+<option>Nairobi</option>
+<option>Kampala</option>
+<option>Kigali</option>
+<option>Bujumbura</option>
+</select>
+</div>
+
+<div class="field">
+<label>DESTINATION</label>
+<select id="to">
+<option>Kigali</option>
+<option>Nairobi</option>
+<option>Kampala</option>
+<option>Mombasa</option>
+<option>Dar es Salaam</option>
+<option>Bujumbura</option>
+</select>
+</div>
+
+<div class="field">
+<label>CONDITION</label>
+<select id="condition">
+<option>Normal</option>
+<option>Heavy Traffic</option>
+<option>Border Delay</option>
+<option>Priority Corridor</option>
+</select>
+</div>
+
+</div>
+
+<br>
+
+<button class="btn primary" onclick="eta()">
+Calculate ETA
+</button>
+
+<div id="etaResult" class="card panel" style="margin-top:14px">
+Select corridor parameters.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CARGO -->
+
+<section id="cargo" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Cargo Tracker</h3>
+<span>SIMULATED REGISTRY</span>
+</div>
+
+<input
+id="cargoInput"
+placeholder="Shipment ID e.g. AAM-2048"
+style="
+width:70%;
+padding:10px;
+background:#020a11;
+color:white;
+border:1px solid #17384c;
+border-radius:6px;
+">
+
+<button class="btn primary" onclick="cargo()">
+Track
+</button>
+
+<div id="cargoResult" class="card panel" style="margin-top:15px">
+Try shipment <strong>AAM-2048</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MESH -->
+
+<section id="mesh" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>AAMush Mesh-01 Operations</h3>
+<span>DEVICE SIMULATION</span>
+</div>
+
+<div class="device">
+<div class="mesh">MESH-01</div>
+</div>
+
+<div class="telemetry">
+
+<div><small>DEVICE</small><b>AAM-4401</b></div>
+<div><small>STATUS</small><b class="online">ONLINE</b></div>
+<div><small>BATTERY</small><b id="battery3">87%</b></div>
+<div><small>SIGNAL</small><b>−68 dBm</b></div>
+<div><small>GPS</small><b>14 SAT</b></div>
+<div><small>PACKETS</small><b id="packets">1,284,721</b></div>
+
+</div>
+
+<br>
+
+<button class="btn primary"
+onclick="eventLog('MESH-01','Telemetry synchronization completed')">
+Sync Telemetry
+</button>
+
+<button class="btn"
+onclick="eventLog('MESH-01','GPS diagnostic completed')">
+GPS Diagnostic
+</button>
+
+<button class="btn"
+onclick="eventLog('MESH-01','Device ping acknowledged')">
+Ping Device
+</button>
+
+</div>
+
+</section>
+
+
+<!-- FEEDER -->
+
+<section id="feeder" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>AAMush-Tech Feeder</h3>
+<span>DATA INGESTION LAYER</span>
+</div>
+
+<p style="color:#8da5b4;font-size:11px;line-height:1.7">
+The AAMush-Tech Feeder represents the telemetry
+ingestion layer between Mesh-01 devices and the
+AAMush Intelligence Mesh.
+</p>
+
+<button class="btn primary"
+onclick="eventLog('FEEDER','AAMush-Tech Feeder started')">
+▶ Start Feeder
+</button>
+
+<button class="btn"
+onclick="eventLog('FEEDER','Feeder calibration initiated')">
+Calibrate
+</button>
+
+<button class="btn"
+onclick="eventLog('FEEDER','Queue flushed successfully')">
+Flush Queue
+</button>
+
+<div class="telemetry">
+
+<div><small>INGEST RATE</small><b>42 events/s</b></div>
+<div><small>QUEUE</small><b>18 packets</b></div>
+<div><small>VALIDATION</small><b class="online">99.8%</b></div>
+<div><small>MODE</small><b>SIMULATION</b></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ALERTS -->
+
+<section id="alerts" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Alerts & Events</h3>
+<span>EVENT STREAM</span>
+</div>
+
+<div id="archive"></div>
+
+</div>
+
+</section>
+
+
+<!-- REPORTS -->
+
+<section id="reports" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Reports</h3>
+<span>DEMONSTRATION</span>
+</div>
+
+<table class="table">
+
+<tr>
+<th>REPORT</th>
+<th>PERIOD</th>
+<th>STATUS</th>
+</tr>
+
+<tr>
+<td>Corridor Performance</td>
+<td>Today</td>
+<td class="online">READY</td>
+</tr>
+
+<tr>
+<td>Mesh-01 Telemetry</td>
+<td>24 Hours</td>
+<td class="online">READY</td>
+</tr>
+
+<tr>
+<td>Border Activity</td>
+<td>Today</td>
+<td class="warning">SIMULATION</td>
+</tr>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- MANUAL -->
+
+<section id="manual" class="view">
+
+<div class="card panel manual">
+
+<div class="head">
+<h3>AAMush Software Operation Manual</h3>
+<span>REVISION 1.0</span>
+</div>
+
+<h3>1. System Purpose</h3>
+
+<p>
+AAMush Intelligence Mesh is a command interface
+for corridor intelligence, telemetry, cargo
+visibility, ETA analysis and border intelligence.
+</p>
+
+<h3>2. Command Centre</h3>
+
+<p>
+Provides the executive operating picture including
+active vehicles, cargo tonnage, mesh health, ETA
+and alerts.
+</p>
+
+<h3>3. Corridor Map</h3>
+
+<p>
+The demonstration architecture consists of:
+Dar es Salaam, Mombasa, Nairobi, Kampala,
+Kigali and Bujumbura.
+</p>
+
+<h3>4. Border Intelligence</h3>
+
+<p>
+Provides a structured representation of simulated
+border queues, clearance conditions and alerts.
+</p>
+
+<h3>5. ETA Engine</h3>
+
+<p>
+Select origin, destination and operating conditions
+to calculate a demonstration ETA.
+</p>
+
+<h3>6. Cargo Tracker</h3>
+
+<p>
+Shipment AAM-2048 is included as the demonstration
+cargo record.
+</p>
+
+<h3>7. Mesh-01</h3>
+
+<p>
+Mesh-01 represents the physical telemetry layer,
+including GPS, battery, signal, heartbeat,
+packets and data rate.
+</p>
+
+<h3>8. AAMush-Tech Feeder</h3>
+
+<p>
+The Feeder represents the data ingestion gateway
+between Mesh-01 and the intelligence layer.
+</p>
+
+<h3>9. Security</h3>
+
+<p>
+Never place production passwords, API keys,
+database credentials or device secrets inside
+this frontend.
+</p>
+
+<h3>10. Simulation Notice</h3>
+
+<p>
+All current telemetry and operational figures are
+simulated demonstration data until verified
+backend and device integrations are implemented.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- DEVELOPER -->
+
+<section id="developer" class="view">
+
+<div class="card panel">
+
+<div class="head">
+<h3>Developer Briefcase</h3>
+<span>AAMUSH TECHNOLOGIES</span>
+</div>
+
+<div class="profile">
+
+<img
+src="developer-photo.jpg"
+alt="Dr. James K. Mushi"
+onerror="this.style.display='none'"
+>
+
+<div>
+
+<div class="eyebrow">
+DEVELOPER PROFILE
+</div>
+
+<h2>
+Dr. James K. Mushi, PhD
+</h2>
+
+<p style="color:#8da5b4;line-height:1.7;font-size:11px">
+Founder & Developer — AAMush Technologies.
+Developer documentation, architecture,
+development history, operating procedures
+and system information are organized within
+the AAMush Developer Briefcase.
+</p>
+
+<button class="btn primary"
+onclick="show('manual')">
+Open Operation Manual
+</button>
+
+</div>
+
+</div>
+
+
+<div class="modules">
+
+<div class="card module">
+<div class="big">⬡</div>
+<h3>System Architecture</h3>
+<p>
+Mesh-01 → Feeder → Intelligence Layer →
+Command Centre.
+</p>
+</div>
+
+<div class="card module">
+<div class="big">◷</div>
+<h3>Development History</h3>
+<p>
+AAMush concept, telemetry architecture
+and command-centre development.
+</p>
+</div>
+
+<div class="card module">
+<div class="big">◆</div>
+<h3>IP / Project Notice</h3>
+<p>
+Project documentation and software
+implementation should be protected
+according to the developer's strategy.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* NAVIGATION */
+
+const buttons =
+document.querySelectorAll(".nav");
+
+const views =
+document.querySelectorAll(".view");
+
+buttons.forEach(btn => {
+
+btn.addEventListener("click",()=>{
+
+show(btn.dataset.view);
+
+});
+
+});
+
+
+function show(id){
+
+views.forEach(v=>{
+v.classList.remove("active");
+});
+
+const target =
+document.getElementById(id);
+
+if(target){
+target.classList.add("active");
+}
+
+buttons.forEach(b=>{
+b.classList.toggle(
+"active",
+b.dataset.view===id
+);
+});
+
+const active =
+document.querySelector(
+'.nav[data-view="'+id+'"]'
+);
+
+if(active){
+document.getElementById("title")
+.textContent =
+active.innerText.trim();
+}
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* EVENTS */
+
+function eventLog(type,message){
+
+const time =
+new Date().toLocaleTimeString();
+
+const html = `
+<div class="event">
+<span class="time">${time}</span>
+<span class="type">${type}</span>
+<span class="msg">${message}</span>
+</div>
+`;
+
+document.getElementById(
+"events"
+).insertAdjacentHTML(
+"afterbegin",html
+);
+
+document.getElementById(
+"archive"
+).insertAdjacentHTML(
+"afterbegin",html
+);
+
+}
+
+eventLog(
+"SYSTEM",
+"AAMush Intelligence Mesh initialized"
+);
+
+eventLog(
+"NETWORK",
+"Six corridor nodes available"
+);
+
+eventLog(
+"MESH-01",
+"Telemetry simulation initialized"
+);
+
+eventLog(
+"FEEDER",
+"AAMush-Tech Feeder ready"
+);
+
+
+/* NODE */
+
+function node(city,country){
+
+eventLog(
+"CORRIDOR",
+city+" node selected"
+);
+
+alert(
+"AAMush Node Intelligence\n\n"+
+"Node: "+city+"\n"+
+"Country: "+country+"\n"+
+"Status: ONLINE\n"+
+"Mesh: STABLE\n"+
+"Mode: SIMULATION"
+);
+
+}
+
+
+/* ETA */
+
+function eta(){
+
+const from =
+document.getElementById("from").value;
+
+const to =
+document.getElementById("to").value;
+
+const condition =
+document.getElementById("condition").value;
+
+if(from===to){
+
+document.getElementById(
+"etaResult"
+).innerHTML =
+"<span class='danger'>Select different locations.</span>";
+
+return;
+
+}
+
+let hours =
+18+Math.floor(Math.random()*18);
+
+if(condition==="Heavy Traffic") hours+=7;
+
+if(condition==="Border Delay") hours+=10;
+
+if(condition==="Priority Corridor") hours-=4;
+
+const minutes =
+Math.floor(Math.random()*60);
+
+document.getElementById(
+"etaResult"
+).innerHTML = `
+
+<strong style="color:var(--cyan)">
+${from} → ${to}
+</strong>
+
+<br><br>
+
+Estimated ETA:
+<strong>
+${hours}h ${minutes}m
+</strong>
+
+<br><br>
+
+Condition:
+${condition}
+
+<br><br>
+
+<small style="color:#607e91">
+Demonstration calculation.
+</small>
+`;
+
+eventLog(
+"ETA",
+"ETA calculated: "+from+" → "+to
+);
+
+}
+
+
+/* CARGO */
+
+function cargo(){
+
+const id =
+(document.getElementById(
+"cargoInput"
+).value || "AAM-2048")
+.toUpperCase();
+
+if(id==="AAM-2048"){
+
+document.getElementById(
+"cargoResult"
+).innerHTML = `
+
+<strong style="color:var(--cyan)">
+Shipment AAM-2048
+</strong>
+
+<br><br>
+
+Commodity: Copper concentrate
+<br>
+Tonnage: 428 tons
+<br>
+Origin: Dar es Salaam
+<br>
+Destination: Kigali
+<br>
+Status:
+<span class="online">
+● IN TRANSIT
+</span>
+
+`;
+
+eventLog(
+"CARGO",
+"Shipment AAM-2048 located"
+);
+
+}else{
+
+document.getElementById(
+"cargoResult"
+).innerHTML =
+"<span class='danger'>No demonstration record found.</span>";
+
+}
+
+}
+
+
+/* FEEDER */
+
+function launchFeeder(){
+
+show("feeder");
+
+eventLog(
+"FEEDER",
+"AAMush-Tech Feeder launch initiated"
+);
+
+}
+
+
+/* DIAGNOSTICS */
+
+function diagnostics(){
+
+eventLog(
+"SYSTEM",
+"Diagnostics completed. Simulated services responding."
+);
+
+alert(
+"AAMush Diagnostics\n\n"+
+"Command Centre: OK\n"+
+"Corridor Map: OK\n"+
+"Mesh-01: ONLINE\n"+
+"Feeder: READY\n"+
+"ETA Engine: READY\n"+
+"Cargo Tracker: READY"
+);
+
+}
+
+
+/* LIVE TELEMETRY */
+
+let packets=1284721;
+
+setInterval(()=>{
+
+const vehicles =
+244+Math.floor(Math.random()*12);
+
+const tons =
+12800+Math.floor(Math.random()*180);
+
+const battery =
+84+Math.floor(Math.random()*6);
+
+document.getElementById(
+"vehicles"
+).textContent=vehicles;
+
+document.getElementById(
+"tons"
+).textContent=
+tons.toLocaleString();
+
+document.getElementById(
+"battery"
+).textContent=
+battery+"%";
+
+document.getElementById(
+"battery2"
+).textContent=
+battery+"%";
+
+document.getElementById(
+"battery3"
+).textContent=
+battery+"%";
+
+document.getElementById(
+"rate"
+).textContent=
+(2.1+Math.random()*.8)
+.toFixed(1)+" Mbps";
+
+packets+=
+Math.floor(Math.random()*900);
+
+document.getElementById(
+"packets"
+).textContent=
+packets.toLocaleString();
+
+},4000);
+
+</script>
+
+</body>
+</html>
